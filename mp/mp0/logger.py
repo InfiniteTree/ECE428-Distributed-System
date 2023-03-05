@@ -1,13 +1,17 @@
 # Reference: https://pythontic.com/modules/socket/bind
 # Reference: https://stackoverflow.com/questions/45498916/how-to-retrieve-a-python-logging-log-record-over-a-socket
+# Reference: https://blog.csdn.net/yw804909465/article/details/124008650
 
 import sys
 import socket
+from socket import *
 import time
 from threading import Thread
 import csv
 
 logger_args_num = 1  # define the number of args that node should receive
+ReceiveBytes = 1024
+### event_cnt = 1 # define the count number of events that we want to estabilsh to receive from the node
 
 '''Function receive_message_tcp'''
 '''
@@ -19,27 +23,23 @@ Side effect: messages received from the server node and be show on the local mac
              new thread start by listening from the client
 '''
 def receive_message_tcp(addr, port):
-    s = socket.socket()
+    s = socket(AF_INET, SOCK_STREAM)
     # TCP connected: Since we may use socket that needs to be made a server socket. we can use s.bind()
     # s.connect((addr,port))
     clientAddress = addr
-    s.bind((clientAddress, port))
-    s.listen()
+    s.bind((clientAddress,port))
+    s.listen(SOMAXCONN)
     
     # Receive the messages\events by the server node with TCP transimission
     # keep waiting from the client for new thread to start 
     while True:
-        (clientSocket, clientAddress) = s.accept();
-        print("The log file shows as follow:")
-        # print("Start waiting for new thread\n")
+        (clientSocket, clientAddress) = s.accept()
+        ### print("Start waiting for new thread\n")
         new_event=Thread(target=Makelog,args=(clientSocket,))
         new_event.start()
-        # print("End of a new thread\n")
+        ### print("End of a new thread\n")
 
-    
-    print("-------------Successfully Received messages---------------\n")
-    # TCP disconnected
-    s.close()
+
 
 '''Function Makelog'''
 '''
@@ -53,25 +53,55 @@ Side effect: messages received from the server node and be show on the local mac
 '''
 def Makelog(s):
     receive_status = 1 # set the flag for the receiving status 
-    while (receive_status):
-        recv_data = s.recv(128).decode("utf-8")
-        if len(recv_data) != 0:
-            for item in recv_data:
-                print(recv_data)
-                recv_item = item.split(" ")
-                
-                # Data received to calculate the bandwidth
-                if len(recv_item)==3:
-                    NodeName= recv_item[1]
-                    genr_time=float(recv_item[0])
-                    recv_time=time.time()
-                    delay=(recv_time-genr_time)*1000 
-                    bandwidth=len(recv_data)/delay
-                    csv_data=[NodeName,delay,bandwidth]                    
-                    w.writerow(csv_data) # Write on csv    
-              
-        receive_status = 0 # the receiveing transmission procedure is finished
+    start_bytes = 0
+    end_bytes = 0
+    with open("messages.csv",mode="a",newline='') as file:
+        w=csv.writer(file)
 
+        # Data Processing on the received message 
+        while (receive_status):
+            recv_data = s.recv(ReceiveBytes).decode("utf-8")
+            end_bytes = end_bytes + ReceiveBytes
+            
+            ### print("The received data shoReceiveByteswn as follow:\n")
+            if len(recv_data) != 0:
+ 
+                    # print the log 
+                    ### print("recv_data is\n", recv_data)
+
+                    # Process the data received to calculate the bandwidth
+                    recv_rawrow = recv_data.split("\n")
+                    ### print("recv_rawrow is ", recv_rawrow)
+                    for recv_str in recv_rawrow:
+                        if len(recv_str) != 0:
+                            recv_row = recv_str.split(" ")
+                            ### print("recv_row is ", recv_row)
+
+                            if len(recv_row)==3:
+                                NodeName= recv_row[1]
+                                genr_time=float(recv_row[0])
+                                recv_time=time.time()
+                                # Delay tracking
+                                delay= recv_time-genr_time
+
+                                # Bandwidth tracking
+                                deltat = delay
+                                ### print("delay is",delay)
+                                if (deltat>0 and deltat<10): # Only record after stable connecion
+                                    tran_bytes = end_bytes - start_bytes
+                                    bandwidth = (tran_bytes / deltat)/1000
+                                    
+                                    # Update
+                                    start_bytes = end_bytes # Update the index of bytes for next generation
+
+                                    csv_row=[NodeName,delay,bandwidth]
+                                    ### print("csv_row is",csv_row)
+                                                        
+                                    w.writerow(csv_row) # Write on csv 
+                                    file.flush()   # Update the csv file synchronized
+
+        receive_status = 0 # the receiveing transmission procedure is finished
+    s.close()
 
 def main(argv=None):
     if argv is None:
@@ -90,11 +120,10 @@ def main(argv=None):
     receive_message_tcp(addr, port)
 
 if __name__ == "__main__":
-    with open("messages.csv",mode="w") as file:
+    with open("messages.csv",mode="w+",newline='') as file:
         w=csv.writer(file)
-        h=['NodeName','delay[sec]','bandwidth[bytes per sec]']
+        h=['NodeName','delay[sec]','bandwidth[bytes/sec]']
         w.writerow(h)
-        main()
-
-
+        ### file.close()
+    main()
 

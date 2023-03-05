@@ -23,6 +23,7 @@ def send_message_tcp(NodeName, addr, port):
 
     # Sending messages by TCP transimission   
     # print the connected status
+    # Do not send the connected and disconnected message because it will add the burden to do the processing on receiving data 
     check_connect = "{0} - {1} connected\n".format(time.time(),NodeName)
     print(check_connect)
     s.send(check_connect.encode("utf-8")) # Send connected status
@@ -48,7 +49,7 @@ def send_message_tcp(NodeName, addr, port):
     print("-------------Successfully Sent messages---------------\n")
 
     # TCP disconnected
-    s.close()
+    # s.close()
     
 
 def main(argv=None):
