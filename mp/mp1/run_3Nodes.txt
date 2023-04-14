@@ -1,0 +1,7 @@
+1. Synchronously Run the following command in three terminals
+python -u gentx.py 0.5 | python mp1_node.py node1 1234 local_config3_1.txt
+python -u gentx.py 0.5 | python mp1_node.py node2 1235 local_config3_2.txt
+python -u gentx.py 0.5 | python mp1_node.py node3 1236 local_config3_3.txt
+
+2. Terminate the Nodes: Call Interupt at the terminal
+ctrl+c

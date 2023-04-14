@@ -1,0 +1,64 @@
+🤓 Submission Tutorial for Homework and Machine Problem
+Dear all, homework1 and mp0 have been released. Please follow the tutorial below to setup your local git repository and understand how submissions are made.
+
+Please feel free the reach out if there are any problems.
+
+All homework and machine problem assignments will be retrieved and submitted using Gitlab. Please follow the instructions below to retrieve and submit your work:
+
+1. Gitlab Repository 🌐
+Welcome to the world of distributed systems! You’ll be receiving and submitting all your homework and machine problems through a private Gitlab repository, which is exclusively assigned to you. You can access this repo by logging in to the school Gitlab at http://ecegitlab.intl.zju.edu.cn with your university credentials.
+
+2. Repository Branches 🌳
+We will create a separate branch for each assignment. The branches are named after the assignments, such as hw1, mp0, etc.
+
+To access a particular assignment, you will need follow the steps in the next section in order to retrieve the corresponding branch from the central repo managed by course stuff.
+
+All your assignment submissions should be committed to the corresponding branch in your repository. Please note that only the latest commit will be graded. Feel free to create additional branches for development purposes. 💻
+
+However, we do have one important request: please do not touch the _grade branch. It is reserved for grade distribution and should only be accessed by the teaching staff. 🙅‍♀️
+
+3. Setup Your Local Git Repo
+To get started with your assignments, you will need to set up your local Git repository. Here are the steps you need to follow:
+
+# replace <url to your repo> with the url to your own git repo
+git clone <url to your repo>
+
+# if you are using ssh
+git remote add upstream git@10.105.100.202:ece374sp23/ece428sp23.git 
+
+# if you are using http
+git remote add upstream http://10.105.100.202:81/ece374sp23/ece428sp23.git
+run code snippetVisit Manage Class to disable runnable code snippets×
+4. Retrieve Assignment Releases
+Once an assignment is released, it will be available on a separate branch in the central repository. Here’s how you can retrieve it:
+
+git fetch upstream
+
+# switch to the assignment branch
+git checkout <branch-name>
+
+# this command push files to your repo at Gitlab
+git push --set-upstream origin <branch-name>
+run code snippetVisit Manage Class to disable runnable code snippets×
+Please note that you should replace branch-name in all commands with the name of the assignment branch you want to switch to, such as hw1, hw2, mp0, mp1, etc. And the last command will push the distributed file you made to your own repository on Gitlab.
+
+5. Submission 📤
+To submit an assignment, follow these steps:
+
+Clone the repository to your local machine.
+Make changes to the assignment files and commit them to the corresponding assignment branch.
+Push the changes to Gitlab.
+If the assignment is a machine problem, do remember to list the names, student ids and emails of your group members in the report.
+Only one group member needs to submit the assignment.
+6. Deadline 🕰️
+Deadline and penalty information can be found in the individual assignment document. Note that we will only grade the latest submission in branch main. Please work hard to submit your work before the deadline.
+
+7. Grading 📊
+After the submission deadline, the TA will grade your assignment using the _grade branch. You can check your grade by logging into Gitlab and navigating to the _grade branch` of your repository.
+
+8. Regrading Requests 🤔
+If you have concerns about your grade, you can request a regarding within 48 hours of the grade being released. To request a regarding, send an email directly to the TA explaining your reasons.
+
+Note: Any form of plagiarism will not be tolerated and will result in a penalty. Please make sure to properly cite any sources used in your work.
+
+That’s it! By following these instructions, you can easily submit your homework and machine problems using Gitlab. Happy coding! 🤖

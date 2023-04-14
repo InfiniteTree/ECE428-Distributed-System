@@ -1,0 +1,12 @@
+1. Synchronously Run the following command in eight terminals
+python3 -u gentx.py 5 | python mp1_node.py node1 1234 local_config8_1.txt 
+python3 -u gentx.py 5 | python mp1_node.py node2 1235 local_config8_2.txt
+python3 -u gentx.py 5 | python mp1_node.py node3 1236 local_config8_3.txt
+python3 -u gentx.py 5 | python mp1_node.py node4 1237 local_config8_4.txt
+python3 -u gentx.py 5 | python mp1_node.py node5 1238 local_config8_5.txt
+python3 -u gentx.py 5 | python mp1_node.py node6 1239 local_config8_6.txt
+python3 -u gentx.py 5 | python mp1_node.py node7 1240 local_config8_7.txt
+python3 -u gentx.py 5 | python mp1_node.py node8 1241 local_config8_8.txt
+
+2. Terminate the Nodes: Call Interupt at the terminal
+ctrl+c
