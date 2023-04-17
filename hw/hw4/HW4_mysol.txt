@@ -1,0 +1,87 @@
+ECE428 HW4
+Q1
+a) 1/7 conflict on A; 5/4 conflict on B; 6/3 conflict on C; 2/9 conflict on D
+
+b) Yes, it is interleaving serially equivalent(T1, T2).
+
+c) Yes, it is possible for both. (T3, T1)∥for B; (T2, T3)∥for D
+
+d) A=5; B=5; C=6; D=1; E=3;
+
+e) (T1, T2, T3): A=5; B=5; C=3; D=1; E=3;
+    (T1, T3, T2): A=2; B=5; C=3; D=1; E=0;
+    (T2, T1, T3): A=5; B=9; C=7; D=5; E=3;
+    (T2, T3, T1): A=5; B=5; C=10; D=1; E=3;
+    (T3, T1, T2): A=2; B=5; C=6; D=1; E=0;
+    (T3, T2, T1): A=2; B=5; C=7; D=1; E=0;
+
+f) If we have (T1,T2) and (T2,T1), the transaction will forms a cross and this cannot be serially equivalent.
+
+g) Where there is a cycle or a cross, the second side should have a lock to wait till the first side release the
+lock. (i.e. If we have (T1,T2),(T2,T3),(T3,T1), in the transaction of (T3,T1), there should be a lock on T1).
+
+h) T1 was not available since it was writing a reading value.
+
+i) Take write(A,z+1) in T2 above and move x=read(A) in T1 down to make it in serial T2->T1. 
+Thus,we would have T2− > T3− > T1 in total serial order and not one end even all started
+
+Q2
+a) According to the recurrence Nt+1 = |Nt + Nt(N − Nt)/(N − 1)|,
+t=0, N = 1;
+t=1, N = 2;
+t=2, N = 3;
+t=3. N = 3+2 = 5;
+...
+t=11, N = 100;
+The round we need is 11.
+
+c) yuhangc3 
+import os
+for num in range(1,100000):
+    ret = os.popen(”echo sc54 ” + str(num) + ” | sha256sum”)
+    rel = ret.readlines()
+    if (rel[0][0:5] == ”00000"):
+        print("the number is",num)
+        break
+
+Q3
+a) T1 should be committed first; then T2 would be aborted since WITHDRAW C is violated; T3 would
+be committed and finally T4 would be aborted.
+
+b) A:0; B:30; C:40
+
+Q5
+a) read(A)T1, write(B)T1, write(A)T1, read(C)T2, write(D)T2, read(C)T1, write(E)T1, read(A)T2,
+read(E)T2, write(B)T2
+
+b) T2 starts until it readlock(A) and read(A).
+T1 is available to readlock(A) and read(A). Then writelock(B) write(B).
+Then the first lock is needing T2 to release readlock(A) for T1 to writelock(A) and write(A).
+While in T2, it need T1 to release writelock(B) to write(B).
+
+c) read(A)T1, write(B)T1, write(A)T1, read(C)T2, write(D)T2, read(A)T2, read(C)T1, write(E)T1,
+read(E)T2, write(B)T2;
+When in read(A) T2, it start to release locks from T1 of writelock(A). But in T1, later it requires locks for read(C) and write(E). 
+Thus, it still requires the locks, which is not a 2-phase locking condition.
+
+d) We focus on A in this situation. Let T1 to read(A) first then T2 read(A) then T1 write(A).
+Thus, for A.RTS, it is [1,2]. But when T1 is trying to write A. Its id is 1 which is lower than the
+maximum id of A.RTS, which is 2. Thus, it would call T1' s abort.
+
+e) read(A)T1, write(B)T1, write(A)T1, read(C)T2, write(D)T2, read(C)T1, write(E)T1, read(A)T2,
+read(E)T2, write(B)T2;
+Timestamp as following:
+A.RTS = [1]; then B.TW = 1; then A.TW = 1; then move to T2;
+C.RTS = [2]; D.TW = 2; then move to T1;
+C.RTS = [2,1]; E.TW = 1; then T1 all commited and go to T2;
+We can process the following 2 process since all needed in T1 is commited. Thus, A.RTS =
+[1,2], E.RTS = [2]; And since it was in T2, 2 is the largest number so the final process write(B) can
+be committed
+
+
+
+
+
+
+
+
