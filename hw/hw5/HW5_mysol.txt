@@ -1,0 +1,102 @@
+Question 1.
+a) To achieve consensus between the cluster members, it takes 2 * 2ms = 4 ms.
+b) At the point of receiving the Prepare message, each replica leader uses Raft to commit the Prepare to the group logs;
+    At the point of receiving all "Yes" votes, the coordinator leader uses Raft to commit the decision to the group logs; 
+    At the point of receiving the Commit messages, each replica leader uses Raft to process the final commit.
+c) the delay from the start to the finish of the two-phase commit protocol: 5 + 4 + 5 + 4 + 5 + 4 + 5 = 32 ms
+d) At the point that the coordinator receives all "Yes" votes. 5 + 4 + 5 = 14 ms
+e) At the point that all servers involved in a transaction have committed. 5 + 4 + 5 + 4 + 5 + 4 = 27 ms
+f) To achieve consensus, Paxos takes 2 * 4 = 8 ms. The total time should be 48 ms.
+g) To achieve consensus, Raft takes 5ms + 5ms = 10 ms. 
+    The delays:
+    c), 2 + 10 + 2 + 10 + 2 + 10 + 2 = 38 ms. 
+    d) 2 + 10 + 2 = 14 ms.
+    e) 2 + 10 + 2 + 10 + 2 + 10 = 36 ms
+
+
+Q2. a)
+# map1 input:
+# key: location
+# value: a triple (name of person, entry time, exit time)
+def map1(key, value):
+  emit(key, value)
+
+# reduce1 input:
+# key: location
+# value: list of triples (name of person, entry time, exit time)
+def reduce1(key, values):
+  for i in range(len(values)):
+    for j in range (i+1, len(values)):
+      if get_overlap_time(values[i][1:], values[j][1:]) >= 15*60:
+        emit(values[i][0], values[j][0])
+        emit(values[j][0], values[i][0])
+
+# map2 input:
+# key: name
+# value: name of contact
+def map2(key, value):
+  emit(key, value)
+
+# reduce2 input:
+# key: name
+# value: list of names of contact
+def reduce2(key, values):
+  set = {}
+  # filter repeated contacts
+  for i in range(len(values)):
+    if set.contains(values[i]):
+      continue
+    set.add(values[i]);
+  emit(key, set)
+
+b) 
+# map1 input:
+# key: triple(i, j, n)
+# value: a floating point number
+def map1(k, v):
+  i, j, n = k
+  if n == 1:
+    for idx in range(P.shape[0]*P.shape[1]):
+      emit((i, idx), (j, v, n))
+  if n == 2:
+    for idx in range(M.shape[0]*M.shape[1]):
+      emit(((t, idx), (i, v, n))
+
+# reduce1 input:
+# key: tuple (i, j) indexing the value of the result matrix
+# value: list of tules (i, v, n), where i ranges from 1 to N, v is a floating point
+# number, n = 1 or 2
+def reduce1(k, vv):
+  row = list((i, v) for i, v, n in vv if n == 1)
+  column = list((i, v) for i, v, n in vv if n == 2)
+  emit(k, sum([i*j for i, j in zip(sorted(row), sorted(column))]))
+
+c)
+# map1 input:
+# key: node name
+# value: v such that (u, v) is an edge in the graph
+def map1(k, v):
+  emit(k, [k, v])
+  emit(v, [v, k])
+  
+# reduece1 input:
+# key: node name
+def reduce1(k, vv):
+  neighbors = concatenate(vv)
+  neighbors = unique(neighbors) 
+  emit(k, neighbors)
+
+def map2(k, v):
+  for e in v:
+    emit(e, v)
+
+def reduce2(k, vv):
+  emit(k, conctenate(vv)
+  reduce1(k, vv)
+  
+def map3(k, v):
+  map2(k, v)
+
+def reduce3(k, vv):
+  reduce1(k, vv)
+
