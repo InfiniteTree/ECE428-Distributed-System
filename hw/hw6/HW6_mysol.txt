@@ -1,0 +1,25 @@
+Q1
+a) Availability and partition-tolerance are held
+b) Availability and consistency are held
+c) Availability and consistency are held
+
+Q2
+a) No. The distribution of R = 1,W= N is great for read-heavy workloads.
+The configure of R = 4, W = 8 is great for write-heavy workloads.
+
+b) Two conflicting writes may occur at the same time if the W that is smaller or equal to N/2 
+
+c) No, because W + R = N instead of larger than N.
+
+d)Yes, because there is a overlap and the write operation that could not lead to a conflicting
+write. The overlap ensures that any read operation that follows a write operation will
+see the most recent completed write operation. 
+
+Q3
+With the change of phase 2 and new phase 3 in Three-Phase Commit, the nodes that have
+voted to the prepare message will know whether the transaction will be committed or
+aborted. When the coordinator or any other participants fail, the remaining participants 
+continue on dealing with the preCommit request or doAbort request instead of waiting to
+the failed nodes being recovered. By this buffer phase, the delay is decreased.
+continue on dealing with the preCommit request or doAbort request instead of waiting to
+the failed nodes being recovered. By this buffer phase, the delay is decreased.
